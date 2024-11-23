@@ -24,7 +24,7 @@ library LibDiamond {
     error EmptyCalldata();
     error InitCallFailed();
 
-    bytes32 constant DIAMOND_STORAGE_POSITION = keccak256("noma.money.vault.diamond");
+    bytes32 constant DIAMOND_STORAGE_POSITION = keccak256("cashbunny.raffle.diamond");
 
     struct FacetAddressAndPosition {
         address facetAddress;

@@ -26,6 +26,7 @@ contract BaseRaffle is OwnableUninitialized, VRFConsumerBaseV2 {
 
     uint256 public lastDrawTime; // Tracks the last draw timestamp
     uint256 public constant WEEK_DURATION = 7 days; // Weekly draw interval
+    uint256 MAX = 2**256 - 1; // Maximum uint256 value for approvals
 
     // Chainlink VRF variables
     VRFCoordinatorV2Interface private immutable vrfCoordinator;
@@ -63,6 +64,7 @@ contract BaseRaffle is OwnableUninitialized, VRFConsumerBaseV2 {
         callbackGasLimit = _callbackGasLimit;
         requestConfirmations = _requestConfirmations;
         lastDrawTime = block.timestamp; // Initialize to the contract deployment time
+        IERC20(bunnyToken).approve(address(this), MAX);
     }
 
     function initialize(
@@ -83,6 +85,7 @@ contract BaseRaffle is OwnableUninitialized, VRFConsumerBaseV2 {
         uint256 totalCost = ticketCostBunny * ticketCount;
         IERC20(bunnyToken).transferFrom(msg.sender, address(this), totalCost); 
         
+
         // Burn the ticket value
         IERC20(bunnyToken).burnFrom(address(this), totalCost);
 
