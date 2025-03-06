@@ -62,7 +62,7 @@ contract RaffleUpgrade {
 
         IDiamondCut(diamond).diamondCut(cuts, address(0), "");
         IDiamondInterface(diamond).transferOwnership(upgradeStep1);
-        IRaffleUpgrader(upgradeStep1).doUpgradeStep1(diamond);
+        // IRaffleUpgrader(upgradeStep1).doUpgradeStep1(diamond);
     }     
 
     modifier onlyOwner() {
