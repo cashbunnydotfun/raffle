@@ -65,7 +65,8 @@ const  handleEnterRaffle = async (participant, tickets, event) => {
     const formattedTotalParticipants = totalParticipants;
     const formattedTotalSupply = commify(Number(formatEther(totalSupply)), 2);
     const truncatedParticipant = `${participant.slice(0, 6)}...${participant.slice(-4)}`;
-    const tokensReceived = Number(formattedTicketCost); // Tokens recibidos por la cantidad de BNB enviada
+    const oldSupply = totalSupply - (ticketCost * tickets);
+    const formattedOldSupply = commify(Number(formatEther(`${oldSupply}`)), 2);
 
     // Formatted time (para el mensaje)
     const formattedTime = formatRemainingTime(remainingTime);
@@ -97,7 +98,8 @@ const  handleEnterRaffle = async (participant, tickets, event) => {
 🏷️**Name:** ${name}
 💠**Symbol:** ${symbol}
 🔢 **Decimals:** ${decimals}
-💰**Total Supply:** ${formattedTotalSupply}
+💰**Total Supply was:** ${formattedOldSupply} 👈
+💰**Total Supply now:** ${formattedTotalSupply} 🔥🔥🔥
 
 
 [🎰▶️ Play Now](${rafflelink}) | [🔗 Tx](${bscScanTransactionsLink}) | [🌐 X](${twitterLink})
