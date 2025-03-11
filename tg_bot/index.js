@@ -83,7 +83,7 @@ const  handleEnterRaffle = async (participant, tickets, event) => {
      // Obtener el total de contribuciones y el número de contribuyentes
      const remainingTime = await raffleContract.getTimeLeftToDraw();
      const ticketCost = await raffleContract.getTicketCost();
-     const TotalTicket = await raffleContract.getTotalTickets();
+     const totalTickets = await raffleContract.getTotalTickets();
      const TotalParticipants = await raffleContract.getTotalParticipants();
      const balance = await provider.getBalance(raffleContractAddress);
 
@@ -109,7 +109,7 @@ const  handleEnterRaffle = async (participant, tickets, event) => {
     // Convertir wei a ETH
     const formattedTicketAmount = tickets;
     const formattedTicketCost = commify(formatEther(`${ticketCost * tickets}`), 4); //commify(Number(formatEther(TicketCost)) * formatEther(tickets), 4);
-    const formattedTotalTicket = TotalTicket;
+    const formattedTotalTicket = totalTickets;
     const formattedTotalParticipants = TotalParticipants;
     const formattedTotalSupply = commify(Number(formatEther(totalSupply)), 4);
     const truncatedParticipant = `${participant.slice(0, 6)}...${participant.slice(-4)}`;
