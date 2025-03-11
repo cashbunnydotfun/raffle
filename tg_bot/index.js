@@ -98,8 +98,8 @@ const  handleEnterRaffle = async (participant, tickets, event) => {
 🏷️**Name:** ${name}
 💠**Symbol:** ${symbol}
 🔢 **Decimals:** ${decimals}
-💰**Total Supply was:** ${formattedOldSupply} 👈
-💰**Total Supply now:** ${formattedTotalSupply} 🔥🔥🔥
+💰**Total Supply was:** ${formattedTotalSupply} 👈
+💰**Total Supply now:** ${formattedOldSupply} 🔥🔥🔥
 
 
 [🎰▶️ Play Now](${rafflelink}) | [🔗 Tx](${bscScanTransactionsLink}) | [🌐 X](${twitterLink})
