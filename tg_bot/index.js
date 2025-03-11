@@ -104,7 +104,7 @@ const  handleEnterRaffle = async (participant, tickets, event) => {
     const twentyFivePercent1 = (balanceAfterReduction * 0.25).toFixed(4);
     const twentyFivePercent2 = (balanceAfterReduction * 0.25).toFixed(4);
     const RolloverBNB = (BalanceBNB * 0.10).toFixed(4);
-    const TotalPrizeBalance = parseFloat(BalanceBNB).toFixed(5)
+    const totalPrizeBalance = parseFloat(BalanceBNB).toFixed(5)
 
     // Convertir wei a ETH
     const formattedTicketAmount = tickets;
@@ -125,35 +125,35 @@ const  handleEnterRaffle = async (participant, tickets, event) => {
     const rafflelink = 'https://cashbunny.fun/raffle'; // Enlace de Twitter
 
     const message = `
-    📢**New Tickets Bought**
-        
-    🧑**Player:** ${truncatedParticipant}
-    ✅**Tickets Bought:** ${formattedTicketAmount} 
-    💸**Spent:** ${formattedTicketCost} BUNNY
-    🔥**$BUNNY Burned:** ${formattedTicketCost} BUNNY
-    🔢**Total Tickets:** ${formattedTotalTicket}
-    🧑‍🤝‍🧑**Total Players:** ${formattedTotalParticipants}
-    ⏳**Time Left:** ${formattedTime}
+📢**New Tickets Bought**
+      
+🧑**Player:** ${truncatedParticipant}
+✅**Tickets Bought:** ${formattedTicketAmount} 
+💸**Spent:** ${formattedTicketCost} BUNNY
+🔥**$BUNNY Burned:** ${formattedTokensReceived} BUNNY
+🔢**Total Tickets:** ${formattedTotalTicket}
+🧑‍🤝‍🧑**Total Players:** ${formattedTotalParticipants}
+⏳**Time Left:** ${formattedTime}
 
-    **🏆Current Prizes Values🏆**
+**🏆Current Prizes Values🏆**
 
-    💰**Total Prize:** ${TotalPrizeBalance} BNB
-    🥇**Fist Prize:** ${fiftyPercent} BNB
-    🥈**Second Prize:** ${twentyFivePercent1} BNB
-    🥉**Third Prize:** ${twentyFivePercent2} BNB
-    🔄**Rollover Prize:** ${RolloverBNB} BNB
+💰**Total Prize:** ${totalPrizeBalance} BNB
+🥇**Fist Prize:** ${fiftyPercent} BNB
+🥈**Second Prize:** ${twentyFivePercent1} BNB
+🥉**Third Prize:** ${twentyFivePercent2} BNB
+🔄**Rollover Prize:** ${RolloverBNB} BNB
 
-    **📑Token Details📑**
+**📑Token Details📑**
 
-    🏷️**Name:** ${name}
-    💠**Symbol:** ${symbol}
-    🔢 **Decimals:** ${decimals}
-    💰**Total Supply:** ${formattedTotalSupply}
+🏷️**Name:** ${name}
+💠**Symbol:** ${symbol}
+🔢 **Decimals:** ${decimals}
+💰**Total Supply:** ${formattedTotalSupply}
 
 
-    [🎰▶️ Play Now](${rafflelink}) | [🔗 Tx](${bscScanTransactionsLink}) | [🌐 X](${twitterLink})
+[🎰▶️ Play Now](${rafflelink}) | [🔗 Tx](${bscScanTransactionsLink}) | [🌐 X](${twitterLink})
+ 
     `;
-
 
      const imageUrl = './video.mp4'; // Reemplaza con la URL de la imagen
 
