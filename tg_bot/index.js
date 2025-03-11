@@ -108,14 +108,14 @@ const  handleEnterRaffle = async (participant, tickets, event) => {
 
     // Convertir wei a ETH
     const formattedTicketAmount = tickets;
-    const formattedTicketCost = commify(formatEther(`${ticketCost * tickets}`), 4); //commify(Number(formatEther(TicketCost)) * formatEther(tickets), 4);
+    const formattedTicketCost = commify(formatEther(`${ticketCost * tickets}`), 2); //commify(Number(formatEther(TicketCost)) * formatEther(tickets), 4);
     const formattedTotalTicket = totalTickets;
     const formattedTotalParticipants = TotalParticipants;
-    const formattedTotalSupply = commify(Number(formatEther(totalSupply)), 4);
+    const formattedTotalSupply = commify(Number(formatEther(totalSupply)), 2);
     const truncatedParticipant = `${participant.slice(0, 6)}...${participant.slice(-4)}`;
     const tokensReceived = Number(formattedTicketCost); // Tokens recibidos por la cantidad de BNB enviada
     // Formatear los tokens después del fee sin notación científica
-    const formattedTokensReceived = commify(tokensReceived, 4);
+    const formattedTokensReceived = commify(tokensReceived, 2);
 
     // Formatted time (para el mensaje)
     const formattedTime = formatRemainingTime(remainingTime);
