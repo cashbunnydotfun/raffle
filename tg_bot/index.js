@@ -2,7 +2,7 @@ import * as ethers from 'ethers';
 import TelegramBot from 'node-telegram-bot-api';
 import { readFileSync } from 'fs';
 import * as dotenv from 'dotenv';
-import { formatRemainingTime, commify } from './utils';
+import { formatRemainingTime, commify } from './utils.js';
 
 const {parseEther, formatEther, JsonRpcProvider, Contract} = ethers;
 dotenv.config();
