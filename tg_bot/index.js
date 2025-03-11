@@ -1,11 +1,11 @@
 import * as ethers from 'ethers';
+import * as dotenv from 'dotenv';
 import TelegramBot from 'node-telegram-bot-api';
 import { readFileSync } from 'fs';
-import * as dotenv from 'dotenv';
 import { formatRemainingTime, commify } from './utils.js';
-
-const {parseEther, formatEther, JsonRpcProvider, Contract} = ethers;
 dotenv.config();
+
+const {formatEther, JsonRpcProvider, Contract} = ethers;
 
 // Configuración del nodo Web3
 const provider = new JsonRpcProvider(process.env.RPC_URL);
@@ -37,7 +37,7 @@ const  handleEnterRaffle = async (participant, tickets, event) => {
      const remainingTime = await raffleContract.getTimeLeftToDraw();
      const ticketCost = await raffleContract.getTicketCost();
      const totalTickets = await raffleContract.getTotalTickets();
-     const TotalParticipants = await raffleContract.getTotalParticipants();
+     const totalParticipants = await raffleContract.getTotalParticipants();
      const balance = await provider.getBalance(raffleContractAddress);
 
      const totalSupply = await bunnyContract.totalSupply();
@@ -46,7 +46,7 @@ const  handleEnterRaffle = async (participant, tickets, event) => {
      const decimals = await bunnyContract.decimals();
 
      // Convertir el balance de wei a BNB
-     const balanceInBNB = ethers.formatUnits(balance, 'ether');  // 'ether' se usa porque BNB tiene la misma unidad base que Ether
+     const balanceInBNB = ethers.formatUnits(balance, 'ether');  
      
      const BalanceBNB = balanceInBNB;
      const balanceAfterReduction = BalanceBNB * 0.9;
@@ -60,9 +60,9 @@ const  handleEnterRaffle = async (participant, tickets, event) => {
 
     // Convertir wei a ETH
     const formattedTicketAmount = tickets;
-    const formattedTicketCost = commify(formatEther(`${ticketCost * tickets}`), 2); //commify(Number(formatEther(TicketCost)) * formatEther(tickets), 4);
+    const formattedTicketCost = commify(formatEther(`${ticketCost * tickets}`), 2);
     const formattedTotalTicket = totalTickets;
-    const formattedTotalParticipants = TotalParticipants;
+    const formattedTotalParticipants = totalParticipants;
     const formattedTotalSupply = commify(Number(formatEther(totalSupply)), 2);
     const truncatedParticipant = `${participant.slice(0, 6)}...${participant.slice(-4)}`;
     const tokensReceived = Number(formattedTicketCost); // Tokens recibidos por la cantidad de BNB enviada
@@ -101,11 +101,10 @@ const  handleEnterRaffle = async (participant, tickets, event) => {
 
 
 [🎰▶️ Play Now](${rafflelink}) | [🔗 Tx](${bscScanTransactionsLink}) | [🌐 X](${twitterLink})
- 
+
     `;
 
-     const imageUrl = './video.mp4'; // Reemplaza con la URL de la imagen
-
+    const imageUrl = './video.mp4'; // Reemplaza con la URL de la imagen
 
     try {
         // Enviar una foto con el mensaje como descripción
@@ -118,7 +117,6 @@ const  handleEnterRaffle = async (participant, tickets, event) => {
 
 const listenEvents = async () => {
     console.log('🚀 Bot de monitoreo iniciado. Esperando eventos...');
-
     raffleContract.on("RaffleEntered", handleEnterRaffle); // Escuchar evento
 }
 
