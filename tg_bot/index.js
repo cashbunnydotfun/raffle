@@ -5,18 +5,18 @@ import { readFileSync } from 'fs';
 import { formatRemainingTime, commify } from './utils.js';
 dotenv.config();
 
-const {formatEther, JsonRpcProvider, Contract} = ethers;
+const { formatEther, JsonRpcProvider, Contract } = ethers;
 
 // Configuración del nodo Web3
 const provider = new JsonRpcProvider(process.env.RPC_URL);
- 
+
 // Cargar el ABI desde el archivo JSON
 const rawData = JSON.parse(readFileSync('./BaseRaffle.json', 'utf8'));
 const contractABI = rawData.abi;
 
 const bunnyArtifact = JSON.parse(readFileSync('./CashBunny.json', 'utf8'));
 const bunnyABI = bunnyArtifact.abi;
-  
+
 // Dirección del contrato
 const raffleContractAddress = process.env.RAFFLE_ADDRESS;
 const bunnyContractAddress = process.env.BUNNY_ADDRESS;
@@ -29,36 +29,31 @@ const bunnyContract = new Contract(bunnyContractAddress, bunnyABI, provider);
 const bot = new TelegramBot(process.env.TELEGRAM_TOKEN, { polling: true });
 const chatId = process.env.CHAT_ID;
 
-
 // Función para manejar contribuciones
-const  handleEnterRaffle = async (participant, tickets, event) => {
+const handleEnterRaffle = async (participant, tickets, event) => {
+    // ... (tu lógica existente para el manejo del evento)
+    // Por ejemplo:
+    const remainingTime = await raffleContract.getTimeLeftToDraw();
+    const ticketCost = await raffleContract.getTicketCost();
+    const totalTickets = await raffleContract.getTotalTickets();
+    const totalParticipants = await raffleContract.getTotalParticipants();
+    const balance = await provider.getBalance(raffleContractAddress);
 
-     // Obtener el total de contribuciones y el número de contribuyentes
-     const remainingTime = await raffleContract.getTimeLeftToDraw();
-     const ticketCost = await raffleContract.getTicketCost();
-     const totalTickets = await raffleContract.getTotalTickets();
-     const totalParticipants = await raffleContract.getTotalParticipants();
-     const balance = await provider.getBalance(raffleContractAddress);
+    const totalSupply = await bunnyContract.totalSupply();
+    const symbol = await bunnyContract.symbol();
+    const name = await bunnyContract.name();
+    const decimals = await bunnyContract.decimals();
 
-     const totalSupply = await bunnyContract.totalSupply();
-     const symbol = await bunnyContract.symbol();
-     const name = await bunnyContract.name();
-     const decimals = await bunnyContract.decimals();
+    const balanceInBNB = ethers.formatUnits(balance, 'ether');
+    const BalanceBNB = balanceInBNB;
+    const balanceAfterReduction = BalanceBNB * 0.9;
 
-     // Convertir el balance de wei a BNB
-     const balanceInBNB = ethers.formatUnits(balance, 'ether');  
-     
-     const BalanceBNB = balanceInBNB;
-     const balanceAfterReduction = BalanceBNB * 0.9;
-
-     // Calcular el 50% y el 25% del balance restante
     const fiftyPercent = (balanceAfterReduction * 0.5).toFixed(4);
     const twentyFivePercent1 = (balanceAfterReduction * 0.25).toFixed(4);
     const twentyFivePercent2 = (balanceAfterReduction * 0.25).toFixed(4);
     const RolloverBNB = (BalanceBNB * 0.10).toFixed(4);
-    const totalPrizeBalance = parseFloat(BalanceBNB).toFixed(5)
+    const totalPrizeBalance = parseFloat(BalanceBNB).toFixed(5);
 
-    // Convertir wei a ETH
     const formattedTicketAmount = tickets;
     const formattedTicketCost = commify(formatEther(`${ticketCost * tickets}`), 2);
     const formattedTotalTicket = totalTickets;
@@ -68,11 +63,10 @@ const  handleEnterRaffle = async (participant, tickets, event) => {
     const oldSupply = totalSupply - (ticketCost * tickets);
     const formattedOldSupply = commify(Number(formatEther(`${oldSupply}`)), 2);
 
-    // Formatted time (para el mensaje)
     const formattedTime = formatRemainingTime(remainingTime);
-    const twitterLink = 'https://x.com/CashBunnydotfun'; // Enlace de Twitter
-    const bscScanTransactionsLink = `https://bscscan.com/address/${raffleContractAddress}`; // Enlace a las transacciones del contrato
-    const rafflelink = 'https://cashbunny.fun/raffle'; // Enlace de Twitter
+    const twitterLink = 'https://x.com/CashBunnydotfun';
+    const bscScanTransactionsLink = `https://bscscan.com/address/${raffleContractAddress}`;
+    const rafflelink = 'https://cashbunny.fun/raffle';
 
     const message = `
 📢**New Tickets Bought**
@@ -103,23 +97,39 @@ const  handleEnterRaffle = async (participant, tickets, event) => {
 
 
 [🎰▶️ Play Now](${rafflelink}) | [🔗 Tx](${bscScanTransactionsLink}) | [🌐 X](${twitterLink})
-
     `;
 
-    const imageUrl = './video.mp4'; // Reemplaza con la URL de la imagen
+    const imageUrl = './video.mp4';
 
     try {
-        // Enviar una foto con el mensaje como descripción
         await bot.sendVideo(chatId, imageUrl, { caption: message, parse_mode: 'Markdown' });
         console.log('✅ Notificación enviada con imagen');
     } catch (error) {
         console.error('❌ Error al enviar el mensaje con imagen a Telegram:', error);
     }
-}
+};
 
+// Función para iniciar la escucha de eventos con reinicio en caso de error
 const listenEvents = async () => {
     console.log('🚀 Bot de monitoreo iniciado. Esperando eventos...');
-    raffleContract.on("RaffleEntered", handleEnterRaffle); // Escuchar evento
-}
+    try {
+        // Escucha el evento "RaffleEntered"
+        raffleContract.on("RaffleEntered", handleEnterRaffle);
+    } catch (error) {
+        console.error('❌ Error al escuchar eventos:', error);
+        console.log('Reiniciando la escucha en 5 segundos...');
+        // Remover listeners para evitar duplicados (si fuera necesario)
+        raffleContract.removeAllListeners("RaffleEntered");
+        setTimeout(listenEvents, 5000);
+    }
+};
+
+// Manejar errores globales para reiniciar el script en caso de excepciones no capturadas
+process.on('uncaughtException', (error) => {
+    console.error('❌ Excepción no capturada:', error);
+    console.log('Reiniciando el script en 5 segundos...');
+    // Aquí se pueden agregar pasos de limpieza si es necesario
+    setTimeout(() => process.exit(1), 5000);
+});
 
 listenEvents();
