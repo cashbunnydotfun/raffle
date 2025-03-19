@@ -5,11 +5,11 @@ import { readFileSync } from 'fs';
 import { formatRemainingTime, commify } from './utils.js';
 dotenv.config();
 
-const { formatEther, JsonRpcProvider, Contract } = ethers;
+const { formatEther, JsonRpcProvider, Network, Contract } = ethers;
 
 // Configuración del nodo Web3
-const provider = new ethers.JsonRpcProvider(process.env.RPC_URL, undefined, {
-    staticNetwork: ethers.Network.from(56),
+const provider = new JsonRpcProvider(process.env.RPC_URL, undefined, {
+    staticNetwork: Network.from(56),
     polling: true
   });
   
