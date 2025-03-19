@@ -8,8 +8,11 @@ dotenv.config();
 const { formatEther, JsonRpcProvider, Contract } = ethers;
 
 // Configuración del nodo Web3
-const provider = new JsonRpcProvider(process.env.RPC_URL);
-
+const provider = new ethers.JsonRpcProvider(process.env.RPC_URL, undefined, {
+    staticNetwork: ethers.Network.from(56),
+    polling: true
+  });
+  
 // Cargar el ABI desde el archivo JSON
 const rawData = JSON.parse(readFileSync('./BaseRaffle.json', 'utf8'));
 const contractABI = rawData.abi;
